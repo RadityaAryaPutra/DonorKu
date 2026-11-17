@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BloodRequestController;
 use App\Http\Controllers\Api\AdminBloodRequestController;
 use App\Http\Controllers\Api\MatchingController;
+use App\Http\Controllers\Api\DonorResponseController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -26,4 +27,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/blood-requests/{bloodRequest}/reject', [AdminBloodRequestController::class, 'reject']);
 
         Route::get('/matching/requests', [MatchingController::class, 'nearby']);
+
+            Route::post('/blood-requests/{bloodRequest}/respond', [DonorResponseController::class, 'store']);
 });
