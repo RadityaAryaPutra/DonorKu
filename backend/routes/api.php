@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DonorProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BloodRequestController;
+use App\Http\Controllers\Api\AdminBloodRequestController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -18,4 +19,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/blood-requests', [BloodRequestController::class, 'store']);
     Route::get('/blood-requests', [BloodRequestController::class, 'index']);
     Route::get('/blood-requests/{bloodRequest}', [BloodRequestController::class, 'show']);
+
+        Route::get('/admin/blood-requests', [AdminBloodRequestController::class, 'index']);
+    Route::post('/admin/blood-requests/{bloodRequest}/verify', [AdminBloodRequestController::class, 'verify']);
+    Route::post('/admin/blood-requests/{bloodRequest}/reject', [AdminBloodRequestController::class, 'reject']);
 });
