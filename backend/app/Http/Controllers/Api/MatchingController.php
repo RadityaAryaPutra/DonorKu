@@ -9,17 +9,6 @@ use Illuminate\Http\Request;
 
 class MatchingController extends Controller
 {
-    // Jeda minimal antar donor (hari).
-    private const DONATION_INTERVAL_DAYS = 90;
-
-    // Golongan darah penerima yang boleh menerima dari pendonor (ABO).
-    private const ABO_RECIPIENTS = [
-        'O' => ['O', 'A', 'B', 'AB'],
-        'A' => ['A', 'AB'],
-        'B' => ['B', 'AB'],
-        'AB' => ['AB'],
-    ];
-
     public function nearby(Request $request): JsonResponse
     {
         $user = $request->user();
@@ -36,7 +25,7 @@ class MatchingController extends Controller
         $radius = (float) $request->query('radius', 5);
         $radius = max(1, min($radius, 50));
 
-        [$eligible, $reason] = $this->eligibility($profile);
+        [$eligible, $reason] = $profile->eligibility();
 
         if (! $eligible) {
             return response()->json([
@@ -54,7 +43,7 @@ class MatchingController extends Controller
             ->where('status', 'aktif')
             ->where('needed_until', '>', now())
             ->whereColumn('units_fulfilled', '<', 'units_needed')
-            ->whereIn('blood_type', self::ABO_RECIPIENTS[$profile->blood_type])
+            ->whereIn('blood_type', $profile->recipientBloodTypes())
             ->having('distance_km', '<=', $radius)
             ->orderBy('distance_km');
 
@@ -82,22 +71,5 @@ class MatchingController extends Controller
             'radius_km' => $radius,
             'data' => $data,
         ]);
-    }
-
-    private function eligibility($profile): array
-    {
-        if (! $profile->is_available) {
-            return [false, 'Kamu sedang menonaktifkan status bersedia dihubungi.'];
-        }
-
-        if ($profile->last_donation_date) {
-            $nextDate = $profile->last_donation_date->copy()->addDays(self::DONATION_INTERVAL_DAYS);
-
-            if ($nextDate->isFuture()) {
-                return [false, 'Kamu baru bisa mendonor lagi mulai '.$nextDate->toDateString().'.'];
-            }
-        }
-
-        return [true, null];
     }
 }
