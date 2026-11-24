@@ -6,6 +6,7 @@ import 'features/auth/auth_provider.dart';
 import 'features/auth/login_screen.dart';
 import 'features/donor/donor_shell.dart';
 import 'features/home/home_placeholder.dart';
+import 'features/requester/requester_shell.dart';
 
 void main() {
   runApp(const DonorKuApp());
@@ -40,9 +41,14 @@ class _Root extends StatelessWidget {
     }
     if (!auth.isLoggedIn) return const LoginScreen();
 
-    // Pendonor punya layar sendiri. Pemohon dan admin menyusul.
-    return auth.user!.role == 'pendonor'
-        ? const DonorShell()
-        : const HomePlaceholder();
+    switch (auth.user!.role) {
+      case 'pendonor':
+        return const DonorShell();
+      case 'pemohon':
+        return const RequesterShell();
+      default:
+        // Admin menyusul.
+        return const HomePlaceholder();
+    }
   }
 }
