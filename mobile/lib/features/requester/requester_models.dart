@@ -51,3 +51,41 @@ String statusLabel(String status) => switch (status) {
   'kedaluwarsa' => 'Kedaluwarsa',
   _ => status,
 };
+
+class ResponseItem {
+  const ResponseItem({
+    required this.id,
+    required this.status,
+    required this.name,
+    this.bloodType,
+    this.rhesus,
+    this.distanceKm,
+    this.phone,
+  });
+
+  final int id;
+  final String status;
+  final String name;
+  final String? bloodType;
+  final String? rhesus;
+  final double? distanceKm;
+  final String? phone;
+
+  String? get label => bloodType == null ? null : '$bloodType${rhesus ?? ''}';
+
+  factory ResponseItem.fromJson(Map<String, dynamic> json) {
+    final donor = Map<String, dynamic>.from(json['donor'] as Map);
+    final distance = donor['distance_km'];
+    return ResponseItem(
+      id: json['id'] as int,
+      status: json['status'] as String,
+      name: donor['name'] as String,
+      bloodType: donor['blood_type'] as String?,
+      rhesus: donor['rhesus'] as String?,
+      distanceKm: distance == null
+          ? null
+          : double.tryParse(distance.toString()),
+      phone: donor['phone'] as String?,
+    );
+  }
+}
