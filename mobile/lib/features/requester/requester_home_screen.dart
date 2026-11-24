@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/format.dart';
 import '../../core/theme.dart';
 import 'create_request_screen.dart';
+import 'request_detail_screen.dart';
 import 'requester_models.dart';
 import 'requester_provider.dart';
 
@@ -147,7 +148,14 @@ class _MyRequestCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
         // Detail dan persetujuan pendonor dikerjakan di langkah berikutnya.
-        onTap: () {},
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ChangeNotifierProvider.value(
+              value: context.read<RequesterProvider>(),
+              child: RequestDetailScreen(requestId: item.id),
+            ),
+          ),
+        ),
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
