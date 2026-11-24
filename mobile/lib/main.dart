@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'core/theme.dart';
+import 'features/admin/admin_screen.dart';
 import 'features/auth/auth_provider.dart';
 import 'features/auth/login_screen.dart';
 import 'features/donor/donor_shell.dart';
@@ -46,8 +47,9 @@ class _Root extends StatelessWidget {
         return const DonorShell();
       case 'pemohon':
         return const RequesterShell();
+      case 'admin':
+        return const AdminScreen();
       default:
-        // Admin menyusul.
         return const HomePlaceholder();
     }
   }
