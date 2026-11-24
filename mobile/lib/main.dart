@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'core/theme.dart';
 import 'features/auth/auth_provider.dart';
 import 'features/auth/login_screen.dart';
+import 'features/donor/donor_shell.dart';
 import 'features/home/home_placeholder.dart';
 
 void main() {
@@ -37,6 +38,11 @@ class _Root extends StatelessWidget {
     if (auth.restoring) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    return auth.isLoggedIn ? const HomePlaceholder() : const LoginScreen();
+    if (!auth.isLoggedIn) return const LoginScreen();
+
+    // Pendonor punya layar sendiri. Pemohon dan admin menyusul.
+    return auth.user!.role == 'pendonor'
+        ? const DonorShell()
+        : const HomePlaceholder();
   }
 }
