@@ -14,6 +14,7 @@ class DonorProvider extends ChangeNotifier {
   bool saving = false;
   String? error;
   double radius = 5;
+  final Set<int> respondedIds = {};
 
   Future<void> load() async {
     loading = true;
@@ -60,5 +61,16 @@ class DonorProvider extends ChangeNotifier {
     final current = profile;
     if (current == null) return null;
     return saveProfile(current.copyWith(isAvailable: value));
+  }
+
+  Future<RespondResult> respond(int requestId) async {
+    try {
+      final result = await _repo.respond(requestId);
+      respondedIds.add(requestId);
+      notifyListeners();
+      return result;
+    } catch (e) {
+      return RespondResult(error: apiErrorMessage(e));
+    }
   }
 }

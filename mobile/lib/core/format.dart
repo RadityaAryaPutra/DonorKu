@@ -15,6 +15,9 @@ const _months = [
 
 String formatDate(DateTime d) => '${d.day} ${_months[d.month - 1]} ${d.year}';
 
+String formatDateTime(DateTime d) =>
+    '${formatDate(d)}, ${d.hour.toString().padLeft(2, '0')}.${d.minute.toString().padLeft(2, '0')}';
+
 String formatKm(double km) =>
     '${km.toStringAsFixed(1).replaceAll('.', ',')} km';
 

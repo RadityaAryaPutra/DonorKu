@@ -111,3 +111,17 @@ class NearbyResult {
   final bool needsProfile;
   final List<NearbyRequest> items;
 }
+
+class RespondResult {
+  const RespondResult({
+    this.name,
+    this.phone,
+    this.alreadyResponded = false,
+    this.error,
+  });
+
+  final String? name;
+  final String? phone;
+  final bool alreadyResponded;
+  final String? error;
+}

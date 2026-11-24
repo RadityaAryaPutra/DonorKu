@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/format.dart';
 import '../../core/theme.dart';
 import '../auth/auth_provider.dart';
+import 'donor_detail_screen.dart';
 import 'donor_models.dart';
 import 'donor_provider.dart';
 
@@ -320,14 +321,23 @@ class _RequestCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final urgent = item.neededUntil.difference(DateTime.now()).inHours < 6;
+    final responded = context.watch<DonorProvider>().respondedIds.contains(
+      item.id,
+    );
 
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(18),
       child: InkWell(
         borderRadius: BorderRadius.circular(18),
-        // Layar detail dikerjakan di langkah berikutnya.
-        onTap: () {},
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ChangeNotifierProvider.value(
+              value: context.read<DonorProvider>(),
+              child: DonorDetailScreen(item: item),
+            ),
+          ),
+        ),
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
@@ -368,11 +378,18 @@ class _RequestCard extends StatelessWidget {
                             AppColors.primary,
                             Colors.white,
                           ),
-                        const _Badge(
-                          'Cocok untukmu',
-                          AppColors.tealSoft,
-                          AppColors.teal,
-                        ),
+                        if (responded)
+                          const _Badge(
+                            'Sudah bersedia',
+                            AppColors.amberSoft,
+                            AppColors.amber,
+                          )
+                        else
+                          const _Badge(
+                            'Cocok untukmu',
+                            AppColors.tealSoft,
+                            AppColors.teal,
+                          ),
                       ],
                     ),
                     const SizedBox(height: 6),

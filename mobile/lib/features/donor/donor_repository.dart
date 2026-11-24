@@ -50,4 +50,23 @@ class DonorRepository {
       rethrow;
     }
   }
+
+  Future<RespondResult> respond(int requestId) async {
+    try {
+      final res = await _dio.post('/blood-requests/$requestId/respond');
+      final body = Map<String, dynamic>.from(res.data as Map);
+      final contact = body['contact'] is Map
+          ? Map<String, dynamic>.from(body['contact'] as Map)
+          : <String, dynamic>{};
+      return RespondResult(
+        name: contact['name'] as String?,
+        phone: contact['phone'] as String?,
+      );
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 409) {
+        return const RespondResult(alreadyResponded: true);
+      }
+      rethrow;
+    }
+  }
 }
